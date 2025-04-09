@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎵 Music Dashboard</title>
+</head>
+<body>
+  <h2>Welcome, {{ user }}</h2>
+  <p><a href="{{ url_for('logout') }}">🚪 Logout</a></p>
+  <!-- 1. 🔍 Search Area -->
+  <h3>🔍 Search Songs</h3>
+  <form method="POST" action="/query">
+    <input type="text" name="title" placeholder="Title">
+    <input type="text" name="artist" placeholder="Artist">
+    <input type="text" name="year" placeholder="Year">
+    <input type="text" name="album" placeholder="Album">
+    <button type="submit">Query</button>
+  </form>
+
+  <hr>
+
+  <!-- Displaying error message -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul style="color: red;">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <!-- 2. 🎯 Query Results -->
+  {% if query_results %}
+    <h3>🎯 Search Results</h3>
+    {% for song in query_results %}
+      <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+        <img src="{{ song.image_url }}" alt="Artist Image" width="150"><br>
+        <strong>{{ song.title }}</strong> by {{ song.artist }}<br>
+        Album: {{ song.album }} | Year: {{ song.year }}
+        {% if song.subscribed %}
+          <span style="color: green; font-weight: bold;">✅ Subscribed</span>
+          <form action="/unsubscribe" method="POST" style="display:inline;">
+            <input type="hidden" name="title" value="{{ song.title }}">
+            <button type="submit">Unsubscribe</button>
+          </form>
+        {% else %}
+          <form action="/subscribe" method="POST" style="display:inline;">
+            <input type="hidden" name="title" value="{{ song.title }}">
+            <input type="hidden" name="artist" value="{{ song.artist }}">
+            <button type="submit">Subscribe</button>
+          </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- 3. ✅ Subscribed Songs -->
+  <h3>✅ Subscribed Songs</h3>
+  {% if subscribed_songs %}
+    {% for song in subscribed_songs %}
+      <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+        <img src="{{ song.image_url }}" alt="Artist Image" width="150"><br>
+        <strong>{{ song.title }}</strong> by {{ song.artist }}<br>
+        Album: {{ song.album }} | Year: {{ song.year }}
+        <form action="/unsubscribe" method="POST" style="display:inline;">
+          <input type="hidden" name="title" value="{{ song.title }}">
+          <button type="submit">Remove</button>
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No subscriptions yet.</p>
+  {% endif %}
+
+
+
+  
+
+</body>
+</html>

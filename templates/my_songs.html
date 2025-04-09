@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎧 My Subscribed Songs</title>
+</head>
+<body>
+    <h2>Hi {{ user }}, here are your subscribed songs 🎶</h2>
+
+    {% if songs %}
+    {% for song in songs %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+            <img src="{{ song.image_url}}" alt="Artist Image" width="150"><br>
+            <strong>{{ song.title }}</strong> by {{ song.artist }}
+        </div>
+    {% endfor %}
+    {%else%}
+    <p>No subscribed songs yet.</p>
+    {%endif%}
+
+    <p><a href="{{url_for('main')}}">⬅️ Back to All Songs</a></p>
+
+</body>
+</html>
